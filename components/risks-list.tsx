@@ -3,8 +3,8 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { AlertTriangle, Link2, DollarSign, Target } from "lucide-react"
-import { risks } from "@/lib/data"
 import { cn } from "@/lib/utils"
+import type { Risk } from "@/lib/api/types"
 
 const categoryIcons: Record<string, typeof AlertTriangle> = {
   Dependency: Link2,
@@ -14,11 +14,12 @@ const categoryIcons: Record<string, typeof AlertTriangle> = {
 }
 
 interface RisksListProps {
+  risks: Risk[]
   onSelectRisk: (id: string) => void
   selectedId: string | null
 }
 
-export function RisksList({ onSelectRisk, selectedId }: RisksListProps) {
+export function RisksList({ risks, onSelectRisk, selectedId }: RisksListProps) {
   return (
     <Card className="border-border bg-card">
       <CardHeader className="pb-3">

@@ -2,8 +2,8 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
-import { pmSignals } from "@/lib/data"
 import { cn } from "@/lib/utils"
+import type { PMSignal } from "@/lib/api/types"
 
 const scoreLabels: Record<string, string> = {
   commitmentIntegrity: "Commitment",
@@ -15,18 +15,19 @@ const scoreLabels: Record<string, string> = {
 }
 
 interface PMSignalsProps {
+  signals: PMSignal[]
   onSelectPM: (pm: string) => void
   selectedPM: string | null
 }
 
-export function PMSignals({ onSelectPM, selectedPM }: PMSignalsProps) {
+export function PMSignals({ signals, onSelectPM, selectedPM }: PMSignalsProps) {
   return (
     <Card className="border-border bg-card">
       <CardHeader className="pb-3">
         <CardTitle className="text-sm font-medium">PM Operating Signals</CardTitle>
       </CardHeader>
       <CardContent className="space-y-3">
-        {pmSignals.map((signal) => (
+        {signals.map((signal) => (
           <button
             key={signal.pm}
             onClick={() => onSelectPM(signal.pm)}

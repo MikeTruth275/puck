@@ -1,5 +1,7 @@
 "use client"
 
+import Link from "next/link"
+import { usePathname } from "next/navigation"
 import {
   FileText,
   LayoutGrid,
@@ -7,6 +9,7 @@ import {
   Activity,
   GitBranch,
   MessageSquare,
+  Bot,
   Plus,
   Moon,
   Sun,
@@ -17,12 +20,13 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { Separator } from "@/components/ui/separator"
 
 const navItems = [
-  { icon: FileText, label: "Weekly Brief", active: true },
-  { icon: LayoutGrid, label: "Portfolio", active: false },
-  { icon: AlertTriangle, label: "Risks", active: false },
-  { icon: Activity, label: "PM Signals", active: false },
-  { icon: GitBranch, label: "Friction Map", active: false },
-  { icon: MessageSquare, label: "1:1 Builder", active: false },
+  { icon: FileText, label: "Weekly Brief", href: "/" },
+  { icon: Bot, label: "Ask Puck", href: "/ask-puck" },
+  { icon: LayoutGrid, label: "Portfolio", href: "/portfolio" },
+  { icon: AlertTriangle, label: "Risks", href: "/risks" },
+  { icon: Activity, label: "PM Signals", href: "/pm-signals" },
+  { icon: GitBranch, label: "Friction Map", href: "/friction-map" },
+  { icon: MessageSquare, label: "1:1 Builder", href: "/one-on-one" },
 ]
 
 interface AppSidebarProps {
@@ -31,9 +35,10 @@ interface AppSidebarProps {
 }
 
 export function AppSidebar({ darkMode, onToggleDarkMode }: AppSidebarProps) {
+  const pathname = usePathname()
+
   return (
     <aside className="flex h-screen w-56 flex-col border-r border-border bg-sidebar">
-      {/* Logo */}
       <div className="flex items-center gap-2.5 px-4 py-5">
         <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-foreground">
           <span className="text-sm font-bold text-background">P</span>
@@ -43,24 +48,27 @@ export function AppSidebar({ darkMode, onToggleDarkMode }: AppSidebarProps) {
 
       <Separator />
 
-      {/* Navigation */}
       <nav className="flex-1 px-3 py-4">
         <ul className="space-y-1">
-          {navItems.map((item) => (
-            <li key={item.label}>
-              <button
-                className={cn(
-                  "flex w-full items-center gap-2.5 rounded-lg px-3 py-2 text-sm font-medium transition-colors",
-                  item.active
-                    ? "bg-sidebar-accent text-sidebar-accent-foreground"
-                    : "text-muted-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
-                )}
-              >
-                <item.icon className="h-4 w-4" />
-                {item.label}
-              </button>
-            </li>
-          ))}
+          {navItems.map((item) => {
+            const isActive = pathname === item.href
+            return (
+              <li key={item.label}>
+                <Link
+                  href={item.href}
+                  className={cn(
+                    "flex w-full items-center gap-2.5 rounded-lg px-3 py-2 text-sm font-medium transition-colors",
+                    isActive
+                      ? "bg-sidebar-accent text-sidebar-accent-foreground"
+                      : "text-muted-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
+                  )}
+                >
+                  <item.icon className="h-4 w-4" />
+                  {item.label}
+                </Link>
+              </li>
+            )
+          })}
         </ul>
 
         <div className="mt-6">
@@ -73,7 +81,6 @@ export function AppSidebar({ darkMode, onToggleDarkMode }: AppSidebarProps) {
 
       <Separator />
 
-      {/* User section */}
       <div className="p-3">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2.5">

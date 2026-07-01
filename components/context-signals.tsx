@@ -1,8 +1,8 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { RefreshCw, Clock, MessageSquare, FileText } from "lucide-react"
-import { contextSignals } from "@/lib/data"
+import { RefreshCw, Clock, MessageSquare, FileText, AlertCircle } from "lucide-react"
 import { cn } from "@/lib/utils"
+import type { ContextSignal } from "@/lib/api/types"
 
 const typeIcons: Record<string, typeof RefreshCw> = {
   "Manual Updates": RefreshCw,
@@ -11,15 +11,19 @@ const typeIcons: Record<string, typeof RefreshCw> = {
   "Missing Artifacts": FileText,
 }
 
-export function ContextSignals() {
+interface ContextSignalsProps {
+  signals: ContextSignal[]
+}
+
+export function ContextSignals({ signals }: ContextSignalsProps) {
   return (
     <Card className="border-border bg-card">
       <CardHeader className="pb-3">
         <CardTitle className="text-sm font-medium">Context Propagation</CardTitle>
       </CardHeader>
       <CardContent className="space-y-2">
-        {contextSignals.map((signal, idx) => {
-          const Icon = typeIcons[signal.type] || RefreshCw
+        {signals.map((signal, idx) => {
+          const Icon = typeIcons[signal.type] || AlertCircle
           return (
             <div
               key={idx}

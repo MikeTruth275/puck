@@ -1,11 +1,15 @@
 import { Card, CardContent } from "@/components/ui/card"
 import { TrendingUp, TrendingDown, Minus } from "lucide-react"
-import { summaryMetrics } from "@/lib/data"
+import type { SummaryMetric } from "@/lib/api/types"
 
-export function MetricsRow() {
+interface MetricsRowProps {
+  metrics: SummaryMetric[]
+}
+
+export function MetricsRow({ metrics }: MetricsRowProps) {
   return (
     <div className="grid grid-cols-5 gap-4">
-      {summaryMetrics.map((metric) => (
+      {metrics.map((metric) => (
         <Card key={metric.label} className="border-border bg-card">
           <CardContent className="p-4">
             <div className="flex items-start justify-between">

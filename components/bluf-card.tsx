@@ -9,7 +9,13 @@ const statusChips = [
   { icon: BarChart3, label: "Confidence", status: "stable" },
 ]
 
-export function BlufCard() {
+interface BlufCardProps {
+  bluf?: string
+}
+
+export function BlufCard({ bluf }: BlufCardProps) {
+  const displayText = bluf || "Portfolio trending stable with one high-priority escalation needed. Enterprise Brain dependency threatens Writer Agent launch date. AIRR scope may not match customer expectations -- proactive Sales alignment recommended. MCP velocity risk emerging but containable."
+
   return (
     <Card className="border-border bg-card">
       <CardContent className="p-6">
@@ -27,7 +33,7 @@ export function BlufCard() {
               </Badge>
             </div>
             <p className="text-base leading-relaxed text-foreground">
-              Portfolio trending stable with one high-priority escalation needed. Enterprise Brain dependency threatens Writer Agent launch date. AIRR scope may not match customer expectations — proactive Sales alignment recommended. MCP velocity risk emerging but containable.
+              {displayText}
             </p>
           </div>
 

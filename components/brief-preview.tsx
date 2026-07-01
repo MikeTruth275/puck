@@ -5,9 +5,13 @@ import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
 import { FileText, Printer, ChevronRight } from "lucide-react"
-import { oneOnOneBrief } from "@/lib/data"
+import type { OneOnOneBrief } from "@/lib/api/types"
 
-export function BriefPreview() {
+interface BriefPreviewProps {
+  brief: OneOnOneBrief
+}
+
+export function BriefPreview({ brief }: BriefPreviewProps) {
   return (
     <Card className="border-border bg-card">
       <CardHeader className="pb-3">
@@ -20,13 +24,12 @@ export function BriefPreview() {
       </CardHeader>
       <CardContent>
         <div className="grid grid-cols-2 gap-6">
-          {/* Left: Brief Content */}
           <div className="space-y-4">
             <div>
               <h4 className="text-[10px] font-medium uppercase tracking-wide text-muted-foreground">
                 BLUF
               </h4>
-              <p className="mt-1 text-xs leading-relaxed">{oneOnOneBrief.bluf}</p>
+              <p className="mt-1 text-xs leading-relaxed">{brief.bluf}</p>
             </div>
 
             <div>
@@ -34,7 +37,7 @@ export function BriefPreview() {
                 Top 3 Signals
               </h4>
               <ul className="mt-1 space-y-1">
-                {oneOnOneBrief.topSignals.map((signal, idx) => (
+                {brief.topSignals.map((signal, idx) => (
                   <li key={idx} className="flex items-start gap-2 text-xs">
                     <ChevronRight className="mt-0.5 h-3 w-3 shrink-0 text-muted-foreground" />
                     <span>{signal}</span>
@@ -48,7 +51,7 @@ export function BriefPreview() {
                 Biggest Risks
               </h4>
               <ul className="mt-1 space-y-1">
-                {oneOnOneBrief.biggestRisks.map((risk, idx) => (
+                {brief.biggestRisks.map((risk, idx) => (
                   <li key={idx} className="flex items-start gap-2 text-xs">
                     <ChevronRight className="mt-0.5 h-3 w-3 shrink-0 text-red-500" />
                     <span>{risk}</span>
@@ -62,7 +65,7 @@ export function BriefPreview() {
                 Recommendations
               </h4>
               <ul className="mt-1 space-y-1">
-                {oneOnOneBrief.recommendations.map((rec, idx) => (
+                {brief.recommendations.map((rec, idx) => (
                   <li key={idx} className="flex items-start gap-2 text-xs">
                     <ChevronRight className="mt-0.5 h-3 w-3 shrink-0 text-emerald-500" />
                     <span>{rec}</span>
@@ -76,7 +79,7 @@ export function BriefPreview() {
                 Calibrate with Waseem
               </h4>
               <ul className="mt-1 space-y-1">
-                {oneOnOneBrief.calibrationTopics.map((topic, idx) => (
+                {brief.calibrationTopics.map((topic, idx) => (
                   <li key={idx} className="flex items-start gap-2 text-xs">
                     <span className="text-muted-foreground">{idx + 1}.</span>
                     <span>{topic}</span>
@@ -86,7 +89,6 @@ export function BriefPreview() {
             </div>
           </div>
 
-          {/* Right: Cheat Sheet Preview */}
           <div className="flex flex-col">
             <div className="flex-1 rounded-xl border border-border bg-muted/30 p-4">
               <div className="mb-3 flex items-center gap-2">
@@ -97,23 +99,19 @@ export function BriefPreview() {
               <div className="space-y-3 text-[10px]">
                 <div>
                   <span className="font-medium text-muted-foreground">1. What changed?</span>
-                  <p className="mt-0.5">Writer Agent slipped 1w, Voice 2.0 descoped, AIRR owner expanded</p>
+                  <p className="mt-0.5">{brief.topSignals.slice(0, 3).join(". ") || "See signals above."}</p>
                 </div>
                 <div>
                   <span className="font-medium text-muted-foreground">2. What is at risk?</span>
-                  <p className="mt-0.5">EB dependency for WA, MCP velocity, AIRR scope alignment</p>
+                  <p className="mt-0.5">{brief.biggestRisks.join(". ") || "See risks above."}</p>
                 </div>
                 <div>
-                  <span className="font-medium text-muted-foreground">3. PM quality signals?</span>
-                  <p className="mt-0.5">Sam strong across all. Ada needs support. Doris blocked externally.</p>
+                  <span className="font-medium text-muted-foreground">3. Recommendations?</span>
+                  <p className="mt-0.5">{brief.recommendations.join(". ") || "See recommendations above."}</p>
                 </div>
                 <div>
-                  <span className="font-medium text-muted-foreground">4. Recommendations?</span>
-                  <p className="mt-0.5">Escalate EB, sync Sales on AIRR, monitor MCP recovery</p>
-                </div>
-                <div>
-                  <span className="font-medium text-muted-foreground">5. Ask Waseem?</span>
-                  <p className="mt-0.5">EB prioritization, AIRR scope decision, MCP staffing options</p>
+                  <span className="font-medium text-muted-foreground">4. Ask Waseem?</span>
+                  <p className="mt-0.5">{brief.calibrationTopics.join(". ") || "See calibration topics above."}</p>
                 </div>
               </div>
             </div>

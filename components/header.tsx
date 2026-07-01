@@ -7,6 +7,8 @@ import {
   Search,
   ChevronDown,
   Clock,
+  Loader2,
+  CheckCircle2,
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -24,10 +26,24 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 
-export function Header() {
+interface HeaderProps {
+  state: "idle" | "loading" | "success" | "error"
+  lastUpdated: Date | null
+  onRefresh: () => void
+}
+
+function formatTimeAgo(date: Date): string {
+  const diffMs = Date.now() - date.getTime()
+  const diffMins = Math.floor(diffMs / 60000)
+  if (diffMins < 1) return "just now"
+  if (diffMins < 60) return `${diffMins}m ago`
+  const diffHours = Math.floor(diffMins / 60)
+  return `${diffHours}h ago`
+}
+
+export function Header({ state, lastUpdated, onRefresh }: HeaderProps) {
   return (
     <header className="sticky top-0 z-10 flex h-14 items-center justify-between border-b border-border bg-background px-6">
-      {/* Left section */}
       <div className="flex items-center gap-4">
         <h1 className="text-lg font-semibold">Weekly Brief</h1>
         
@@ -57,7 +73,6 @@ export function Header() {
         </DropdownMenu>
       </div>
 
-      {/* Center section - Filters */}
       <div className="flex items-center gap-2">
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -72,6 +87,8 @@ export function Header() {
             <DropdownMenuItem>Patrick Lin</DropdownMenuItem>
             <DropdownMenuItem>Sam Julien</DropdownMenuItem>
             <DropdownMenuItem>Ada Li</DropdownMenuItem>
+            <DropdownMenuItem>Ashley Brooks</DropdownMenuItem>
+            <DropdownMenuItem>Helen Ulasevich</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
 
@@ -88,6 +105,7 @@ export function Header() {
             <DropdownMenuItem>Voice 2.0</DropdownMenuItem>
             <DropdownMenuItem>AIS 2.0</DropdownMenuItem>
             <DropdownMenuItem>AIRR</DropdownMenuItem>
+            <DropdownMenuItem>MCP / Connectors</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
 
@@ -100,15 +118,32 @@ export function Header() {
         </div>
       </div>
 
-      {/* Right section */}
       <div className="flex items-center gap-2">
         <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
-          <Clock className="h-3 w-3" />
-          <span>Updated 34m ago</span>
+          {state === "loading" ? (
+            <Loader2 className="h-3 w-3 animate-spin" />
+          ) : state === "success" ? (
+            <CheckCircle2 className="h-3 w-3 text-emerald-500" />
+          ) : (
+            <Clock className="h-3 w-3" />
+          )}
+          <span>
+            {state === "loading"
+              ? "Updating..."
+              : lastUpdated
+                ? `Updated ${formatTimeAgo(lastUpdated)}`
+                : "Not yet loaded"}
+          </span>
         </div>
 
-        <Button variant="outline" size="sm" className="h-8 gap-1.5">
-          <RefreshCw className="h-3.5 w-3.5" />
+        <Button
+          variant="outline"
+          size="sm"
+          className="h-8 gap-1.5"
+          onClick={onRefresh}
+          disabled={state === "loading"}
+        >
+          <RefreshCw className={`h-3.5 w-3.5 ${state === "loading" ? "animate-spin" : ""}`} />
           Refresh
         </Button>
 

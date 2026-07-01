@@ -3,8 +3,8 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { ArrowRight, Calendar, Scissors, GitBranch, User, AlertCircle } from "lucide-react"
-import { changes } from "@/lib/data"
 import { cn } from "@/lib/utils"
+import type { Change } from "@/lib/api/types"
 
 const categoryIcons: Record<string, typeof Calendar> = {
   schedule: Calendar,
@@ -15,11 +15,12 @@ const categoryIcons: Record<string, typeof Calendar> = {
 }
 
 interface ChangesListProps {
+  changes: Change[]
   onSelectChange: (id: string) => void
   selectedId: string | null
 }
 
-export function ChangesList({ onSelectChange, selectedId }: ChangesListProps) {
+export function ChangesList({ changes, onSelectChange, selectedId }: ChangesListProps) {
   return (
     <Card className="border-border bg-card">
       <CardHeader className="pb-3">

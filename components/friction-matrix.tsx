@@ -1,8 +1,12 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { frictions } from "@/lib/data"
 import { cn } from "@/lib/utils"
+import type { Friction } from "@/lib/api/types"
 
-export function FrictionMatrix() {
+interface FrictionMatrixProps {
+  frictions: Friction[]
+}
+
+export function FrictionMatrix({ frictions }: FrictionMatrixProps) {
   return (
     <Card className="border-border bg-card">
       <CardHeader className="pb-3">

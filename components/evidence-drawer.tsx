@@ -5,21 +5,21 @@ import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { ScrollArea } from "@/components/ui/scroll-area"
-import { evidenceData } from "@/lib/data"
 import { cn } from "@/lib/utils"
+import type { EvidenceData } from "@/lib/api/types"
 
 interface EvidenceDrawerProps {
   open: boolean
   onClose: () => void
   selectedItem: string | null
+  evidenceData: EvidenceData
 }
 
-export function EvidenceDrawer({ open, onClose, selectedItem }: EvidenceDrawerProps) {
+export function EvidenceDrawer({ open, onClose, evidenceData }: EvidenceDrawerProps) {
   if (!open) return null
 
   return (
     <div className="flex h-full w-80 flex-col border-l border-border bg-card">
-      {/* Header */}
       <div className="flex items-center justify-between border-b border-border px-4 py-3">
         <h3 className="text-sm font-medium">Evidence</h3>
         <Button variant="ghost" size="icon" className="h-7 w-7" onClick={onClose}>
@@ -27,7 +27,6 @@ export function EvidenceDrawer({ open, onClose, selectedItem }: EvidenceDrawerPr
         </Button>
       </div>
 
-      {/* Tabs */}
       <Tabs defaultValue="jira" className="flex flex-1 flex-col">
         <TabsList className="mx-4 mt-3 grid w-auto grid-cols-4">
           <TabsTrigger value="jira" className="text-xs">Jira</TabsTrigger>
@@ -39,6 +38,9 @@ export function EvidenceDrawer({ open, onClose, selectedItem }: EvidenceDrawerPr
         <ScrollArea className="flex-1">
           <TabsContent value="jira" className="m-0 p-4">
             <div className="space-y-3">
+              {evidenceData.jira.length === 0 && (
+                <p className="text-xs text-muted-foreground">No Jira data available.</p>
+              )}
               {evidenceData.jira.map((item) => (
                 <div key={item.id} className="rounded-lg border border-border p-3">
                   <div className="flex items-start justify-between">
@@ -49,11 +51,11 @@ export function EvidenceDrawer({ open, onClose, selectedItem }: EvidenceDrawerPr
                           variant="outline"
                           className={cn(
                             "text-[10px]",
-                            item.status === "Blocked"
+                            item.status === "Blocked" || item.status === "BLOCKED"
                               ? "border-red-200 bg-red-50 text-red-700 dark:border-red-800 dark:bg-red-950 dark:text-red-400"
-                              : item.status === "Scope Changed"
-                              ? "border-amber-200 bg-amber-50 text-amber-700 dark:border-amber-800 dark:bg-amber-950 dark:text-amber-400"
-                              : "border-emerald-200 bg-emerald-50 text-emerald-700 dark:border-emerald-800 dark:bg-emerald-950 dark:text-emerald-400"
+                              : item.status === "Done" || item.status === "In Prod"
+                              ? "border-emerald-200 bg-emerald-50 text-emerald-700 dark:border-emerald-800 dark:bg-emerald-950 dark:text-emerald-400"
+                              : "border-amber-200 bg-amber-50 text-amber-700 dark:border-amber-800 dark:bg-amber-950 dark:text-amber-400"
                           )}
                         >
                           {item.status}
@@ -78,6 +80,9 @@ export function EvidenceDrawer({ open, onClose, selectedItem }: EvidenceDrawerPr
 
           <TabsContent value="github" className="m-0 p-4">
             <div className="space-y-3">
+              {evidenceData.github.length === 0 && (
+                <p className="text-xs text-muted-foreground">No GitHub data available.</p>
+              )}
               {evidenceData.github.map((item) => (
                 <div key={item.repo} className="rounded-lg border border-border p-3">
                   <div className="flex items-center justify-between">
@@ -122,54 +127,62 @@ export function EvidenceDrawer({ open, onClose, selectedItem }: EvidenceDrawerPr
 
           <TabsContent value="slack" className="m-0 p-4">
             <div className="space-y-3">
-              {evidenceData.slack.map((item, idx) => (
-                <div key={idx} className="rounded-lg border border-border p-3">
-                  <div className="flex items-center gap-2">
-                    <code className="text-[10px] text-muted-foreground">{item.channel}</code>
+              {evidenceData.slack.length === 0 ? (
+                <p className="text-xs text-muted-foreground">Slack integration not wired yet. Coming soon.</p>
+              ) : (
+                evidenceData.slack.map((item, idx) => (
+                  <div key={idx} className="rounded-lg border border-border p-3">
+                    <div className="flex items-center gap-2">
+                      <code className="text-[10px] text-muted-foreground">{item.channel}</code>
+                    </div>
+                    <p className="mt-2 text-xs text-foreground">&ldquo;{item.message}&rdquo;</p>
+                    <div className="mt-2 flex items-center gap-2 text-[10px] text-muted-foreground">
+                      <span className="font-medium text-foreground">{item.author}</span>
+                      <span>·</span>
+                      <span>{item.time}</span>
+                    </div>
                   </div>
-                  <p className="mt-2 text-xs text-foreground">"{item.message}"</p>
-                  <div className="mt-2 flex items-center gap-2 text-[10px] text-muted-foreground">
-                    <span className="font-medium text-foreground">{item.author}</span>
-                    <span>·</span>
-                    <span>{item.time}</span>
-                  </div>
-                </div>
-              ))}
+                ))
+              )}
             </div>
           </TabsContent>
 
           <TabsContent value="docs" className="m-0 p-4">
             <div className="space-y-3">
-              {evidenceData.docs.map((item, idx) => (
-                <div key={idx} className="rounded-lg border border-border p-3">
-                  <div className="flex items-start justify-between">
-                    <p className="text-xs font-medium">{item.title}</p>
-                    <Button variant="ghost" size="icon" className="h-6 w-6">
-                      <ExternalLink className="h-3 w-3" />
-                    </Button>
+              {evidenceData.docs.length === 0 ? (
+                <p className="text-xs text-muted-foreground">Docs integration not wired yet. Coming soon.</p>
+              ) : (
+                evidenceData.docs.map((item, idx) => (
+                  <div key={idx} className="rounded-lg border border-border p-3">
+                    <div className="flex items-start justify-between">
+                      <p className="text-xs font-medium">{item.title}</p>
+                      <Button variant="ghost" size="icon" className="h-6 w-6">
+                        <ExternalLink className="h-3 w-3" />
+                      </Button>
+                    </div>
+                    <div className="mt-2 flex items-center gap-2">
+                      <Badge
+                        variant="outline"
+                        className={cn(
+                          "text-[10px]",
+                          item.status === "Current"
+                            ? "border-emerald-200 bg-emerald-50 text-emerald-700 dark:border-emerald-800 dark:bg-emerald-950 dark:text-emerald-400"
+                            : item.status === "Stale"
+                            ? "border-red-200 bg-red-50 text-red-700 dark:border-red-800 dark:bg-red-950 dark:text-red-400"
+                            : "border-amber-200 bg-amber-50 text-amber-700 dark:border-amber-800 dark:bg-amber-950 dark:text-amber-400"
+                        )}
+                      >
+                        {item.status}
+                      </Badge>
+                    </div>
+                    <div className="mt-2 flex items-center gap-2 text-[10px] text-muted-foreground">
+                      <span>{item.owner}</span>
+                      <span>·</span>
+                      <span>Updated {item.lastUpdated}</span>
+                    </div>
                   </div>
-                  <div className="mt-2 flex items-center gap-2">
-                    <Badge
-                      variant="outline"
-                      className={cn(
-                        "text-[10px]",
-                        item.status === "Current"
-                          ? "border-emerald-200 bg-emerald-50 text-emerald-700 dark:border-emerald-800 dark:bg-emerald-950 dark:text-emerald-400"
-                          : item.status === "Stale"
-                          ? "border-red-200 bg-red-50 text-red-700 dark:border-red-800 dark:bg-red-950 dark:text-red-400"
-                          : "border-amber-200 bg-amber-50 text-amber-700 dark:border-amber-800 dark:bg-amber-950 dark:text-amber-400"
-                      )}
-                    >
-                      {item.status}
-                    </Badge>
-                  </div>
-                  <div className="mt-2 flex items-center gap-2 text-[10px] text-muted-foreground">
-                    <span>{item.owner}</span>
-                    <span>·</span>
-                    <span>Updated {item.lastUpdated}</span>
-                  </div>
-                </div>
-              ))}
+                ))
+              )}
             </div>
           </TabsContent>
         </ScrollArea>

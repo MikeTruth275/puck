@@ -1,8 +1,12 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Lightbulb } from "lucide-react"
-import { recommendations } from "@/lib/data"
+import type { Recommendation } from "@/lib/api/types"
 
-export function Recommendations() {
+interface RecommendationsProps {
+  recommendations: Recommendation[]
+}
+
+export function Recommendations({ recommendations }: RecommendationsProps) {
   return (
     <Card className="border-border bg-card">
       <CardHeader className="pb-3">
